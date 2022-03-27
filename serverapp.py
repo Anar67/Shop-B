@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -17,9 +18,21 @@ def index():
 def about():
     return render_template('about.html')
 
-@app.route('/create')
+@app.route('/create', methods =(['POST'], ['GET']))
 def create():
-    return render_template('create.html')
+    
+    if request.method == "POST":
+        title = request.form['title']
+        price = request.form['price']
+        item = Item(title = title, price = price)
+        try:
+            db.session.add(item)
+            db.session.commit()
+            return redirect('/')
+        except:
+            return "Получилась ошибка"
+    else:
+        return render_template('create.html')
 	
 	#return '<h1>Hello!!!! Anar</h1>'
 if __name__ == "__main__":
