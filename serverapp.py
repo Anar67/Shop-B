@@ -1,8 +1,9 @@
 #https://www.youtube.com/watch?v=759C2p3CAA4&t=1867s
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-db = sqlalchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
+db = SQLAlchemy(app)
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100), nullable = False)
@@ -15,6 +16,10 @@ def index():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+@app.route('/create')
+def create():
+    return render_template('create.html')
 	
 	#return '<h1>Hello!!!! Anar</h1>'
 if __name__ == "__main__":
