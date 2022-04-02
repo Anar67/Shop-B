@@ -1,7 +1,8 @@
 #https://www.youtube.com/watch?v=759C2p3CAA4&t=1867s
-from flask import Flask, render_template
+from flask import Flask, render_template,redirect 
 from flask_sqlalchemy import SQLAlchemy
 from flask import request
+import os
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -14,23 +15,25 @@ class Item(db.Model):
 	#text = db.Column(db.Text, nullable = False)
     def __repr__(self):
         return self.title
+		
 @app.route('/')
 def index():
     items = Item.query.order_by(Item.price).all()
     return render_template('index.html', data = items) #вместо data любое название
-    return render_template('index.html')
+    
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-@app.route('/create', methods =['POST', 'GET'])
-
+@app.route('/create/', methods =['POST', 'GET'])
 def create():
-    
-    if request.method == "POST":
+    print('1')
+    if request.method == 'POST':
         title = request.form['title']
         price = request.form['price']
         item = Item(title = title, price = price)
+        
+        print('2')
         try:
             db.session.add(item)
             db.session.commit()
